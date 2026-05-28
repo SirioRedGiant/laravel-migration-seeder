@@ -45,9 +45,8 @@
 </head>
 
 <body>
-
     <div class="container mt-5">
-        <h1 class="text-center board-title mb-4">Departures / Partenze</h1>
+        <h1 class="text-center board-title mb-4">Departures / Dèparts / Salidas / Partenze</h1>
 
         <div class="table-responsive">
             <table class="table table-dark table-striped align-middle">
@@ -57,8 +56,10 @@
                         <th>Azienda</th>
                         <th>Partenza</th>
                         <th>Arrivo</th>
+                        <th>Binario</th>
                         <th>Orario Partenza</th>
                         <th>Stato</th>
+                        <th>Ritardo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,27 +70,59 @@
                         <td>{{ $train->company }}</td>
                         <td>{{ $train->departure_station }}</td>
                         <td>{{ $train->arrival_station }}</td>
+                        <td>{{ $train->platform ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($train->departure_time)->format('d/m/Y H:i') }}</td>
+
                         <td>
                             @if ($train->is_cancelled)
                             <span class="status-cancelled">CANCELLATO</span>
                             @elseif (!$train->is_on_time)
                             <span class="status-late">RITARDO</span>
                             @else
-                            IN ORARIO
+                            <span style="color: #2a9d8f;">IN ORARIO</span> @endif
+                        </td>
+
+                        <td class="text-center">
+                            @if ($train->is_cancelled)
+                            <span class="text-muted">-</span>
+                            @elseif ($train->delay_minutes > 0)
+                            <span class="status-late">+{{ $train->delay_minutes }}'</span>
+                            @else
+                            <span style="color: #2a9d8f; font-size: 1.2rem;">✔</span>
                             @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center">Nessun treno in partenza previsto! Contattare l'ufficio informazioni</td>
+                        <td colspan="8" class="text-center">Nessun treno in partenza previsto per oggi.</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
+        <div class="mt-5 p-4 rounded" style="background-color: #222; border: 1px solid #444;">
+            <h4 class="board-title mb-3" style="font-size: 1.2rem;">Statistiche del Mese</h4>
+
+            <p class="mb-1">
+                <span style="color: #888;">Media ritardi globale:</span>
+                <strong>{{ number_format($averageDelay, 1) }} minuti</strong>
+            </p>
+
+            <p class="mb-0">
+                <span style="color: #888;">Treno più virtuoso del mese:</span>
+                @if($bestTrain)
+                <strong style="color: #2a9d8f;">Codice {{ $bestTrain->train_code }}</strong>
+                <span style="font-size: 0.9rem;">(Ritardo max: {{ $bestTrain->delay_minutes }}')</span>
+                @else
+                <span class="text-muted">Dati non ancora disponibili.</span>
+                @endif
+            </p>
+        </div>
+
     </div>
 
 </body>
+
 
 </html>
