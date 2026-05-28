@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('arrival_station', 100);
             $table->dateTime('departure_time');
             $table->dateTime('arrival_time');
-            $table->string('train_code', 30)->unique();
-            $table->unsignedTinyInteger('carriages_nunomber');
+            $table->string('train_code', 30); // ho rimosso l'unicità così il treno può ripetere la stessa tratta il giorno dopo o può essere riutilizzato nel ritorno
+            $table->unsignedTinyInteger('carriages_number');
             $table->boolean('is_on_time')->default(true);
             $table->boolean('is_cancelled')->default(false);
 
