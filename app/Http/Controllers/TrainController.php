@@ -14,7 +14,7 @@ class TrainController extends Controller
             ->orderby('departure_time', 'asc')
             ->get();
 
-        dd($trains);
+
 
         return view('home', compact('trains'));
     }
