@@ -44,14 +44,20 @@ class TrainFactory extends Factory
             'Trieste Centrale'
         ];
 
+        //^ stazione di partenza
+        $departureStation = fake()->randomElement($stazioni);
+
+        //^ stazione di arrivo
+        $arrivalStation = fake()->randomElement(array_diff($stazioni, [$departureStation]));
+
         return [
 
             // sceglie a caso da un array per avere aziende realistiche
             'company' => fake()->randomElement(['Trenitalia', 'Italo', 'Trenord', 'Frecciarossa']),
 
             // città casuali per le stazioni --> usando l'array $stazioni (i nomi casuali non mi piacevano) --> evito la possibilità che la stazione di partanza venga ripescata
-            'departure_station' => fake()->randomElement($stazioni),
-            'arrival_station' => fake()->randomElement(array_diff($stazioni, [$departureTime])),
+            'departure_station' => $departureStation,
+            'arrival_station' => $arrivalStation,
 
             // orari casuali (partenza tra oggi e domani, arrivo tra domani e dopodomani)
             'departure_time' => $departureTime,
