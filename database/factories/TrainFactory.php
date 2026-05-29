@@ -20,23 +20,42 @@ class TrainFactory extends Factory
     {
         //todo -> l'orario di arrivo dipende dall'orario di partenza. Per rendere i dati circa realistici, bisogna creare prima la data di partenza, salvarla in una variabile, e poi calcolare la data/orario di arrivo aggiungendo una durata di viaggio plausibile (30 minuti <-> 8 ore).
 
-        // orario di partenza
+        //^ orario di partenza
         $departureTime = fake()->dateTimeBetween('now', '+1 days');
 
-        // l'arrivo 
+        //^ l'arrivo 
         $arrivalTime = Carbon::parse($departureTime)->addMinutes(fake()->numberBetween(30, 480)); //tempo in minuti 60*8
+
+        //^ elenco di stazioni ferroviarie
+        $stazioni = [
+            'Milano Centrale',
+            'Roma Termini',
+            'Firenze Santa Maria Novella',
+            'Torino Porta Nuova',
+            'Bologna Centrale',
+            'Napoli Centrale',
+            'Venezia Santa Lucia',
+            'Verona Porta Nuova',
+            'Genova Piazza Principe',
+            'Bergamo',
+            'Pisa Centrale',
+            'Bari Centrale',
+            'Padova',
+            'Trieste Centrale'
+        ];
+
         return [
 
             // sceglie a caso da un array per avere aziende realistiche
             'company' => fake()->randomElement(['Trenitalia', 'Italo', 'Trenord', 'Frecciarossa']),
 
-            // città casuali per le stazioni
-            'departure_station' => fake()->city(),
-            'arrival_station' => fake()->city(),
+            // città casuali per le stazioni --> usando l'array $stazioni (i nomi casuali non mi piacevano)
+            'departure_station' => fake()->randomElement($stazioni),
+            'arrival_station' => fake()->randomElement($stazioni),
 
             // orari casuali (partenza tra oggi e domani, arrivo tra domani e dopodomani)
-            'departure_time' => fake()->dateTimeBetween('-1 days', '+1 days'),
-            'arrival_time' => fake()->dateTimeBetween('+1 days', '+2 days'),
+            'departure_time' => $departureTime,
+            'arrival_time' => $arrivalTime,
 
             // genera un codice tipo "XY-1234" e garantisce che sia unico
             'train_code' => fake()->unique()->bothify('??-####'),
